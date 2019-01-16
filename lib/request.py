@@ -71,7 +71,8 @@ class Request:
 		"""
 		try:
 			config = json.load(open('lib/config.json'))
-			r = requests.head(domain_name + path, timeout=config['timeout'], headers={'User-Agent' : config['agent']}, auth=(config['user'], config['pass']), allow_redirects=False, verify=False)
+			r = requests.head(domain_name + path, timeout=config['timeout'], headers={'User-Agent' : config['agent']}, auth=(config['user'], config['pass']), verify=False)
+			#r = requests.head(domain_name + path, timeout=config['timeout'], headers={'User-Agent' : config['agent']}, auth=(config['user'], config['pass']), allow_redirects=False, verify=False)
 			status_code = str(r.status_code)
 			if status_code == '405':
 				print("WARNING, (HEAD) method not allowed!!")
