@@ -130,7 +130,23 @@ class Request:
 			because usually the TYPO3 version is in the first few lines of the response.
 		"""
 		config = json.load(open('lib/config.json'))
-		r = requests.get(domain_name + path, stream=True, timeout=config['timeout'], headers={'User-Agent' : config['agent']}, auth=(config['user'], config['pass']), verify=False)
+		r = None
+		try:
+			r = requests.get(domain_name + path, stream=True, timeout=config['timeout'], headers={'User-Agent' : config['agent']}, auth=(config['user'], config['pass']), verify=False)
+		except requests.exceptions.Timeout:
+			print(Fore.RED + '[x] Connection timed out' + Fore.RESET)
+			return None
+		except requests.exceptions.ConnectionError as e: 
+			print(e)
+			print(Fore.RED + '[x] Connection error\n | Please make sure you provided the right URL' + Fore.RESET)
+			return None
+		except requests.exceptions.RequestException as e:
+			print(Fore.RED + str(e) + Fore.RESET)
+			return None
+		except Error as e:
+			print(Fore.RED + str(e) + Fore.RESET)
+			return None
+
 		if r.status_code == 200:
 			try:
 				for content in r.iter_content(chunk_size=400, decode_unicode=False):
@@ -140,3 +156,5 @@ class Request:
 					return version
 			except:
 				return None
+		else:
+			return None

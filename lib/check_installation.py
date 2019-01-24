@@ -48,6 +48,8 @@ class Typo3_Installation:
 	@staticmethod
 	def check_root(domain):
 		response = Request.get_request(domain.get_name(), '/')
+		if response is None:
+			return False
 		if re.search('[Tt][Yy][Pp][Oo]3', response[0]):
 			domain.set_typo3()
 			headers = Request.interesting_headers(response[1], response[2])
